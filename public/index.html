@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elevation Profile</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map;
+    var colors = [
+        "#0008ff",
+        "#008cff",
+        "#00fff7",
+        "#00ff31",
+        "#a5ff00",
+        "#fff700",
+        "#ff7300",
+        "#ff0800",
+    ];
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 37, lng: -122},
+        zoom: 10
+        });
+        map.points=[];
+        map.addListener('click',function(e){
+            if (map.points.length<2) {
+                var p = new google.maps.Marker({
+                    position: {lat: e.latLng.H, lng: e.latLng.L},
+                    map: map
+                });
+                map.points.push(p);
+            }
+            if (map.points.length==2) {
+                var p0 = map.points[0];
+                var p1 = map.points[1];
+                var url = '/elevationProfile?lat0='+p0.position.lat()
+                        +'&lon0='+p0.position.lng()
+                        +'&lat1='+p1.position.lat()
+                        +'&lon1='+p1.position.lng();
+                d3.json(url,function(err,data){
+                    if (err) console.error(err);
+                    else {
+                        data.points.forEach(function(point){
+                            var colorIndex = parseInt(((point.elev-data.minElevation)/(data.maxElevation-data.minElevation))*7);
+                            var marker = new google.maps.Marker({
+                                position: new google.maps.LatLng(point.lat,point.lon),
+                                map: map,
+                                icon: {
+                                    path: google.maps.SymbolPath.CIRCLE,
+                                    strokeColor: colors[colorIndex],
+                                    scale: 3
+                                }
+                            });
+                            map.points.push(marker);
+                        });
+                    }
+                });
+            } else if (map.points.length>2){
+                map.points.forEach(function(point){
+                    point.setMap(null);
+                });
+                map.points=[];
+            }
+        });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBpdEZexiqBNCsOWSSGntxsJGUnjFC4Gs&callback=initMap"
+        async defer></script>
+</body>
+</html>
