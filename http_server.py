@@ -19,7 +19,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             s.send_header("Content-type", "text/html")
             s.end_headers()
             s.wfile.write(open('public/index.html').read())
-        else:
+        elif req.path.startswith('/elevationProfile'):
             query = parse_qs(req.query)
             try:
                 x0,y0,x1,y1=(query['lon0'][0],query['lat0'][0],query['lon1'][0],query['lat1'][0])
@@ -36,12 +36,33 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             resp = {
                 "maxElevation": float(max),
                 "minElevation": float(min),
+                "units": 'meters',
                 "points": elevProfile
             }
             s.send_response(200)
             s.send_header("Content-type", "application/json")
             s.end_headers()
             s.wfile.write(json.dumps(resp))
+        elif req.path.startswith('/getElevation'):
+            query = parse_qs(req.query)
+            try:
+                lon,lat=(query['lon'][0],query['lat'][0])
+                elev = getElevation(lon,lat)
+            except:
+                s.send_response(500)
+                return
+            resp = {
+                "elev": float(elev),
+                "lat": float(lat),
+                "lon": float(lon),
+                "units": 'meters'
+            }
+            s.send_response(200)
+            s.send_header("Content-type", "application/json")
+            s.end_headers()
+            s.wfile.write(json.dumps(resp))
+        else:
+            s.send_response(500)
 
 httpd = SocketServer.TCPServer(("", PORT), MyHandler)
 
