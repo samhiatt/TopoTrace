@@ -55,19 +55,19 @@ class GTOPO30:
         """
         dy = -1/120.
         dx = 1/120.
-        y0grid = ( y0 / dy ) - ( self.y0 / dy )
-        y1grid = ( y1 / dy ) - ( self.y0 / dy )
-        x0grid = ( x0 / dx ) - ( self.x0 / dx )
-        x1grid = ( x1 / dx ) - ( self.x0 / dx )
+        y0grid = int(( y0 / dy ) - ( self.y0 / dy ))
+        y1grid = int(( y1 / dy ) - ( self.y0 / dy ))
+        x0grid = int(( x0 / dx ) - ( self.x0 / dx ))
+        x1grid = int(( x1 / dx ) - ( self.x0 / dx ))
         if y1grid>y0grid: yPositive = True
         else: yPositive = False
         if x1grid>x0grid: xPositive = True
         else: xPositive = False
         deltaxgrid = x1grid - x0grid
         if deltaxgrid == 0:  # this is a vertical line, just walk y vals
-            if yPositive: yRange = range(int(y0grid), int(y1grid))
-            else: yRange = range(int(y1grid), int(y0grid))
-            return [(x0grid*dx,y*dy) for y in yRange]
+            if yPositive: yRange = range(y0grid, y1grid)
+            else: yRange = range(y1grid, y0grid)
+            return [(x0grid*dx-180,y*dy+90) for y in yRange]
         res=[]
         deltaygrid = y1grid - y0grid
         error = 0
@@ -77,7 +77,7 @@ class GTOPO30:
         # else: xRange = range(int(x1grid),int(x0grid))
         if xPositive: step = 1
         else: step = -1
-        for x in range(int(x0grid),int(x1grid),step):
+        for x in range(x0grid,x1grid+step,step):
             if (x,y) not in res: res.append((x*dx-180,y*dy+90))
             error = error + deltaerrgrid
             while error >= 0.5:
