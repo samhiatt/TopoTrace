@@ -27,18 +27,21 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             except:
                 s.send_response(500)
                 return
-            resp=[]
             max = -9999
             min = 9000000
             for x,y,z in elevProfile:
-                resp.append('{"lat":%s,"lon":%s,"elev":%s}'%(y,x,z))
                 if z > max: max = z
                 if z > -999 and z < min: min = z
-            # resp = ['{"lat":%s,"lon":%s,"elev":%s}'%(y,x,z) for x, y, z in elevProfile ]
+            elevProfile = [{"lon":x,"lat":y,"elev":float(z)} for x,y,z in elevProfile]
+            resp = {
+                "maxElevation": float(max),
+                "minElevation": float(min),
+                "points": elevProfile
+            }
             s.send_response(200)
             s.send_header("Content-type", "application/json")
             s.end_headers()
-            s.wfile.write('{"maxElevation": %i, "minElevation": %i, '%(max,min)+'"points": ['+','.join(resp)+']}')
+            s.wfile.write(json.dumps(resp))
 
 httpd = SocketServer.TCPServer(("", PORT), MyHandler)
 
