@@ -1,4 +1,4 @@
-import argparse
+import argparse, json
 from GTOPO30 import getElevationProfile
 
 parser = argparse.ArgumentParser(description='Get elevation profile for a line between two points.')
@@ -9,4 +9,5 @@ parser.add_argument('--lon1', dest='lon1', action='store', type=float, default =
 args=parser.parse_args()
 
 elevProfile = getElevationProfile(args.lon0,args.lat0,args.lon1,args.lat1)
-print elevProfile
+elevProfile = [{"lon":x,"lat":y,"elev":float(z)} for x,y,z in elevProfile]
+print json.dumps(elevProfile)
