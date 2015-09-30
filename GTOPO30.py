@@ -77,7 +77,7 @@ class GTOPO30:
         # else: xRange = range(int(x1grid),int(x0grid))
         if xPositive: step = 1
         else: step = -1
-        for x in range(int(x0grid),int(x1grid),step):
+        for x in range(int(x0grid),int(x1grid)+step,step):
             if (x,y) not in res: res.append((x*dx-180,y*dy+90))
             error = error + deltaerrgrid
             while error >= 0.5:
