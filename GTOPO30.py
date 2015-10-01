@@ -65,8 +65,8 @@ class GTOPO30:
         else: xPositive = False
         deltaxgrid = x1grid - x0grid
         if deltaxgrid == 0:  # this is a vertical line, just walk y vals
-            if yPositive: yRange = range(y0grid, y1grid)
-            else: yRange = range(y1grid, y0grid)
+            if yPositive: yRange = range(y0grid, y1grid+1)
+            else: yRange = range(y1grid, y0grid+1)
             return [(x0grid*dx-180,y*dy+90) for y in yRange]
         res=[]
         deltaygrid = y1grid - y0grid
