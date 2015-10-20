@@ -21,14 +21,8 @@ stations.ensure_index([("loc","2dsphere")])
 topodb = client['topo']
 water = topodb['topo.water']
 
-stationsQuery = stations.find({
-        "_id":re.compile('^KCA')
-    })
-print "%i stations"%stationsQuery.count()
-cnt=0
-t0=datetime.now()
-for station in stationsQuery:
-    cnt+=1
+
+def getFilteredNeighbors(station):
     # t0waterQuery = datetime.now()
     waterQuery = water.find({
         "geometry":{"$near":{
@@ -96,7 +90,19 @@ for station in stationsQuery:
             # print("%s and %s are%s neighbors"%(neighbor['_id'],station['_id'],str))
             filteredNeighbors.append(neighbor['_id'])
         print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
-    print("Done with station %s, %i of %i"%(station['_id'],cnt,stationsQuery.count()))
-    stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}})
-    print('\n')
-print("Done. %is"%(datetime.now()-t0).total_seconds())
+        return filteredNeighbors
+
+if __name__=='__main__':
+    stationsQuery = stations.find({
+            "_id":re.compile('^KCAMODES')
+        })
+    print "%i stations"%stationsQuery.count()
+    cnt=0
+    t0=datetime.now()
+    for station in stationsQuery:
+        cnt+=1
+        filteredNeighbors = getFilteredNeighbors(station)
+        print("Done with station %s, %i of %i"%(station['_id'],cnt,stationsQuery.count()))
+        stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}})
+        print('\n')
+    print("Done. %is"%(datetime.now()-t0).total_seconds())

@@ -3,6 +3,7 @@ import BaseHTTPServer
 import json
 from urlparse import urlparse, parse_qs
 from GTOPO30 import getElevation, getElevationProfile
+from find_station_neighbors import getFilteredNeighbors, stations
 
 PORT = 9000
 
@@ -57,6 +58,19 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 "lon": float(lon),
                 "units": 'meters'
             }
+            s.send_response(200)
+            s.send_header("Content-type", "application/json")
+            s.end_headers()
+            s.wfile.write(json.dumps(resp))
+        elif req.path.startswith('/getFilteredNeighbors'):
+            query = parse_qs(req.query)
+            try:
+                stationId = query['stationId'][0]
+                station = stations.find_one({"_id":stationId})
+            except:
+                s.send_response(500)
+                return
+            resp=getFilteredNeighbors(station)
             s.send_response(200)
             s.send_header("Content-type", "application/json")
             s.end_headers()
