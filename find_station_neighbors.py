@@ -38,6 +38,9 @@ def getFilteredNeighbors(station):
             "loc":{"$near":{"$geometry":station['loc'],
                "$maxDistance":DISTANCE_THRESHOLD}
               }
+        },
+        {
+            "loc":1
         })#.limit(5)
     t0NeighborLoop = datetime.now()
     # dt = datetime.now() - t0neighborQuery
@@ -57,7 +60,7 @@ def getFilteredNeighbors(station):
             elevProfile = DataFrame(getElevationProfile(c0[0],c0[1],c1[0],c1[1]),
                                     columns=('lon','lat','elev'))
             elevs=elevProfile['elev']
-            elevs[elevs==-9999]=0  # set no-data to 0
+            elevProfile.loc[elevs==-9999,'elev']=0  # set no-data to 0
             #print (elevProfile)
             relativePeakHeight = elevs.max() \
                 - np.max([elevs[0],elevs[len(elevProfile)-1]])

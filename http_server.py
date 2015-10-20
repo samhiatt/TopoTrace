@@ -66,7 +66,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             query = parse_qs(req.query)
             try:
                 stationId = query['stationId'][0]
-                station = stations.find_one({"_id":stationId})
+                station = stations.find_one({
+                    "_id":stationId
+                },{
+                    "loc":1
+                })
             except:
                 s.send_response(500)
                 return
