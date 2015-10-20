@@ -22,20 +22,23 @@ topodb = client['topo']
 water = topodb['topo.water']
 
 stationsQuery = stations.find({
-        "_id":re.compile('^KCASANFR')
-    }).limit(5)
+        "_id":re.compile('^KCA')
+    })
 print "%i stations"%stationsQuery.count()
+cnt=0
+t0=datetime.now()
 for station in stationsQuery:
-    t0waterQuery = datetime.now()
+    cnt+=1
+    # t0waterQuery = datetime.now()
     waterQuery = water.find({
         "geometry":{"$near":{
             "$geometry": station['loc'],
             "$maxDistance": WATER_DISTANCE_THRESHOLD}
         }})
     stationNearWater = waterQuery.count()>0
-    print("%s, %i bodies of water, found in %.6fs"%(station['_id'],waterQuery.count(),(datetime.now()-t0waterQuery).total_seconds()))
+    # print("%s, %i bodies of water, found in %.6fs"%(station['_id'],waterQuery.count(),(datetime.now()-t0waterQuery).total_seconds()))
     # Get nearby stations
-    t0neighborQuery = datetime.now()
+    # t0neighborQuery = datetime.now()
     neighborQuery = stations.find({
             "_id":{"$ne":station['_id']},
             "loc":{"$near":{"$geometry":station['loc'],
@@ -43,19 +46,20 @@ for station in stationsQuery:
               }
         })#.limit(5)
     t0NeighborLoop = datetime.now()
-    dt = datetime.now() - t0neighborQuery
-    print("Neighbor query: %.6fs"%dt.total_seconds())
+    # dt = datetime.now() - t0neighborQuery
+    # print("Neighbor query: %.6fs"%dt.total_seconds())
+    filteredNeighbors=[]
     if neighborQuery.count()==np.nan:
         print "Station %s has no nearby stations."%station['_id']
     else:
-        print "%s's %i nearby stations:"%(station['_id'],neighborQuery.count())
+        # print "%s's %i nearby stations:"%(station['_id'],neighborQuery.count())
         c0 = station['loc']['coordinates']
         stationLoc = LatLon(c0[1],c0[0])
         neighborCount = 0
         for neighbor in neighborQuery:
             neighborCount+=1
             c1 = neighbor['loc']['coordinates']
-            t0topoQuery = datetime.now()
+            # t0topoQuery = datetime.now()
             elevProfile = DataFrame(getElevationProfile(c0[0],c0[1],c1[0],c1[1]),
                                     columns=('lon','lat','elev'))
             elevs=elevProfile['elev']
@@ -65,31 +69,34 @@ for station in stationsQuery:
                 - np.max([elevs[0],elevs[len(elevProfile)-1]])
             neighborLoc = LatLon(c1[1],c1[0])
             dist = stationLoc.distance(neighborLoc)
-            print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
+            # print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
             hillNeighbors = True
             waterNeighbors = False
             if relativePeakHeight>TOPO_THRESHOLD:
                 hillNeighbors=False
-            str = " "
-            if hillNeighbors: str=" not"
-            print("%s is%s blocked by hill. %.6fs"%(neighbor['_id'],str,(datetime.now()-t0topoQuery).total_seconds()))
-            t0waterQuery = datetime.now()
+            # str = " "
+            # if hillNeighbors: str=" not"
+            # print("%s is%s blocked by hill. %.6fs"%(neighbor['_id'],str,(datetime.now()-t0topoQuery).total_seconds()))
+            # t0waterQuery = datetime.now()
             waterQuery = water.find({
                 "geometry":{"$near":{
                     "$geometry": neighbor['loc'],
                     "$maxDistance": WATER_DISTANCE_THRESHOLD}
                 }})
-            print ("%s has %i bodies of water within %i m. %.6fs"%(
-                neighbor['_id'],
-                waterQuery.count(),
-                WATER_DISTANCE_THRESHOLD,
-                (datetime.now()-t0waterQuery).total_seconds()
-            ))
+            # print ("%s has %i bodies of water nearby. %.6fs"%(
+            #     neighbor['_id'],
+            #     waterQuery.count(),
+            #     (datetime.now()-t0waterQuery).total_seconds()
+            # ))
             neighborNearWater = waterQuery.count()>0
             if (stationNearWater and neighborNearWater) or (not stationNearWater and not neighborNearWater):
                 waterNeighbors = True
-            if (waterNeighbors and hillNeighbors): str = " "
-            else: str = " not"
-            print("%s and %s are%s neighbors"%(neighbor['_id'],station['_id'],str))
-            # TODO: Save verdict to db
-    print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
+            # if (waterNeighbors and hillNeighbors): str = " "
+            # else: str = " not"
+            # print("%s and %s are%s neighbors"%(neighbor['_id'],station['_id'],str))
+            filteredNeighbors.append(neighbor['_id'])
+        print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
+    print("Done with station %s, %i of %i"%(station['_id'],cnt,stationsQuery.count()))
+    stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}})
+    print('\n')
+print("Done. %is"%(datetime.now()-t0).total_seconds())
