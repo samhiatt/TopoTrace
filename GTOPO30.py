@@ -55,10 +55,10 @@ class GTOPO30:
         """
         dy = -1/120.
         dx = 1/120.
-        y0grid = int(( y0 / dy ) - ( self.y0 / dy ))
-        y1grid = int(( y1 / dy ) - ( self.y0 / dy ))
-        x0grid = int(( x0 / dx ) - ( self.x0 / dx ))
-        x1grid = int(( x1 / dx ) - ( self.x0 / dx ))
+        y0grid = ( y0 / dy ) - ( self.y0 / dy )
+        y1grid = ( y1 / dy ) - ( self.y0 / dy )
+        x0grid = ( x0 / dx ) - ( self.x0 / dx )
+        x1grid = ( x1 / dx ) - ( self.x0 / dx )
         if y1grid>y0grid: yPositive = True
         else: yPositive = False
         if x1grid>x0grid: xPositive = True
