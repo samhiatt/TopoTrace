@@ -98,13 +98,13 @@
 			map.setZoom(10);
 			var marker = new google.maps.Marker({
 				position: stationLocation,
+                title: data.station._id,
 				icon: {
                     path: google.maps.SymbolPath.CIRCLE,
                     scale: 3,
                     strokeColor: 'red'
                 },
-				zIndex: 1000,
-				clickable:false
+				zIndex: 1000
 			});
 			marker.setMap(map);
 			if (!map.markers) map.markers = [];
@@ -115,14 +115,13 @@
                     var stationLocation = new google.maps.LatLng(neighbor.loc.coordinates[1],neighbor.loc.coordinates[0]);
                     var marker = new google.maps.Marker({
                         position: stationLocation,
-//                        id: neighbor._id,
+                        title: neighbor._id,
                         icon: {
                             path: google.maps.SymbolPath.CIRCLE,
                             scale: 3,
                             strokeColor: 'blue'
                         },
-                        zIndex: 1000,
-                        clickable:false
+                        zIndex: 1000
                     });
                     marker.setMap(map);
                     map.markers.push(marker);

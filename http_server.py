@@ -74,8 +74,10 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             except:
                 s.send_response(500)
                 return
-            resp={"station":station,
-                  "filteredNeighbors":getFilteredNeighbors(station)}
+            if station:
+                resp={"station":station,
+                      "filteredNeighbors":getFilteredNeighbors(station)}
+            else: resp={}
             s.send_response(200)
             s.send_header("Content-type", "application/json")
             s.end_headers()
