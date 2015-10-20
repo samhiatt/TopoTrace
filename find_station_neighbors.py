@@ -45,6 +45,7 @@ def getFilteredNeighbors(station):
     t0NeighborLoop = datetime.now()
     # dt = datetime.now() - t0neighborQuery
     # print("Neighbor query: %.6fs"%dt.total_seconds())
+    neighbors = []
     filteredNeighbors=[]
     if neighborQuery.count()==np.nan:
         print "Station %s has no nearby stations."%station['_id']
@@ -54,6 +55,7 @@ def getFilteredNeighbors(station):
         stationLoc = LatLon(c0[1],c0[0])
         neighborCount = 0
         for neighbor in neighborQuery:
+            neighbors.append(neighbor)
             neighborCount+=1
             c1 = neighbor['loc']['coordinates']
             # t0topoQuery = datetime.now()
@@ -93,7 +95,7 @@ def getFilteredNeighbors(station):
             # print("%s and %s are%s neighbors"%(neighbor['_id'],station['_id'],str))
             if (waterNeighbors and hillNeighbors): filteredNeighbors.append(neighbor)
         print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
-        return filteredNeighbors
+        return filteredNeighbors, neighbors
 
 if __name__=='__main__':
     stationsQuery = stations.find({
@@ -104,7 +106,7 @@ if __name__=='__main__':
     t0=datetime.now()
     for station in stationsQuery:
         cnt+=1
-        filteredNeighbors = [s['_id'] for s in getFilteredNeighbors(station)]
+        filteredNeighbors = [s['_id'] for s in getFilteredNeighbors(station)[0]]
         print("Done with station %s, %i of %i"%(station['_id'],cnt,stationsQuery.count()))
         stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}})
         print('\n')

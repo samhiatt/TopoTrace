@@ -28,110 +28,108 @@
 </form>
 <div id="map"></div>
 <script>
-    var map;
-    var colors = [
-        "#0008ff",
-        "#008cff",
-        "#00fff7",
-        "#00ff31",
-        "#a5ff00",
-        "#fff700",
-        "#ff7300",
-        "#ff0800",
-    ];
-    function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 37, lng: -122},
-        zoom: 10
-        });
-        map.points=[];
-        map.addListener('click',function(e){
-            if (map.points.length<2) {
-                var p = new google.maps.Marker({
-                    position: e.latLng,
-                    map: map
-                });
-                map.points.push(p);
-            }
-            if (map.points.length==2) {
-                var p0 = map.points[0];
-                var p1 = map.points[1];
-                var url = '/elevationProfile?lat0='+p0.position.lat()
-                        +'&lon0='+p0.position.lng()
-                        +'&lat1='+p1.position.lat()
-                        +'&lon1='+p1.position.lng();
-                d3.json(url,function(err,data){
-                    if (err) console.error(err);
-                    else {
-                        data.points.forEach(function(point){
-                            var colorIndex = parseInt(((point.elev-data.minElevation)/(data.maxElevation-data.minElevation))*7);
-                            var marker = new google.maps.Marker({
-                                position: new google.maps.LatLng(point.lat,point.lon),
-                                map: map,
-                                icon: {
-                                    path: google.maps.SymbolPath.CIRCLE,
-                                    strokeColor: colors[colorIndex],
-                                    scale: 3
-                                }
-                            });
-                            map.points.push(marker);
+var map;
+var colors = [
+    "#0008ff",
+    "#008cff",
+    "#00fff7",
+    "#00ff31",
+    "#a5ff00",
+    "#fff700",
+    "#ff7300",
+    "#ff0800",
+];
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 37, lng: -122},
+    zoom: 10
+    });
+    map.points=[];
+    map.addListener('click',function(e){
+        if (map.points.length<2) {
+            var p = new google.maps.Marker({
+                position: e.latLng,
+                map: map
+            });
+            map.points.push(p);
+        }
+        if (map.points.length==2) {
+            var p0 = map.points[0];
+            var p1 = map.points[1];
+            var url = '/elevationProfile?lat0='+p0.position.lat()
+                    +'&lon0='+p0.position.lng()
+                    +'&lat1='+p1.position.lat()
+                    +'&lon1='+p1.position.lng();
+            d3.json(url,function(err,data){
+                if (err) console.error(err);
+                else {
+                    data.points.forEach(function(point){
+                        var colorIndex = parseInt(((point.elev-data.minElevation)/(data.maxElevation-data.minElevation))*7);
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(point.lat,point.lon),
+                            map: map,
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                strokeColor: colors[colorIndex],
+                                scale: 3
+                            }
                         });
-                    }
-                });
-            } else if (map.points.length>2){
-                map.points.forEach(function(point){
-                    point.setMap(null);
-                });
-                map.points=[];
-            }
-        });
-    }
-    function locationSearch(searchForm){
-	var searchValue = document.getElementById('searchInput').value;
-	d3.json("/getFilteredNeighbors?stationId="+searchValue,function(err,data){
-		if (err) throw err;
-		console.log("Got station:",data);
+                        map.points.push(marker);
+                    });
+                }
+            });
+        } else if (map.points.length>2){
+            map.points.forEach(function(point){
+                point.setMap(null);
+            });
+            map.points=[];
+        }
+    });
+}
+function locationSearch(searchForm){
+    var searchValue = document.getElementById('searchInput').value;
+    d3.json("/getFilteredNeighbors?stationId="+searchValue,function(err,data){
+        if (err) throw err;
+        console.log("Got station:",data);
         map.markers=map.markers||[];
-		if ((((data||{}).station||{}).loc||{}).coordinates){
-			var stationLocation = new google.maps.LatLng(data.station.loc.coordinates[1],data.station.loc.coordinates[0]);
-			map.setCenter(stationLocation);
-			map.setZoom(10);
-			var marker = new google.maps.Marker({
-				position: stationLocation,
-                title: data.station._id,
-				icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 3,
-                    strokeColor: 'red'
-                },
-				zIndex: 1000
-			});
-			marker.setMap(map);
-			if (!map.markers) map.markers = [];
-			map.markers.forEach(function(highlight){ highlight.setMap(null);});
-			map.markers.push(marker);
+        if ((((data||{}).station||{}).loc||{}).coordinates){
+            var stationLocation = new google.maps.LatLng(data.station.loc.coordinates[1],data.station.loc.coordinates[0]);
+            map.setCenter(stationLocation);
+            map.setZoom(10);
+            map.markers.forEach(function(highlight){ highlight.setMap(null);});
+            if (((data||{}).neighbors||{}).forEach) {
+                data.neighbors.forEach(function(neighbor){
+                    addMarker(neighbor.loc,'gray',neighbor._id);
+                });
+            }
             if (((data||{}).filteredNeighbors||{}).forEach){
                 data.filteredNeighbors.forEach(function(neighbor){
-                    var stationLocation = new google.maps.LatLng(neighbor.loc.coordinates[1],neighbor.loc.coordinates[0]);
-                    var marker = new google.maps.Marker({
-                        position: stationLocation,
-                        title: neighbor._id,
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 3,
-                            strokeColor: 'blue'
-                        },
-                        zIndex: 1000
-                    });
-                    marker.setMap(map);
-                    map.markers.push(marker);
+                    addMarker(neighbor.loc,'blue',neighbor._id);
                 });
             }
-		} else {
-			console.log("Error finding location for "+searchValue);
-		}
-	});
+            addMarker(data.station.loc,'red',data.station._id);
+        } else {
+            console.log("Error finding location for "+searchValue);
+        }
+    });
 };
+function addMarker(point,color,title){
+    var stationLocation = new google.maps.LatLng(point.coordinates[1],point.coordinates[0]);
+    var marker = new google.maps.Marker({
+        position: stationLocation,
+        title: title,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 3,
+            strokeColor: color
+        },
+        zIndex: 1000
+    });
+    marker.setMap(map);
+    if (!map.markers) map.markers = [];
+    map.markers.push(marker);
+    return marker;
+}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBpdEZexiqBNCsOWSSGntxsJGUnjFC4Gs&callback=initMap"
         async defer></script>
