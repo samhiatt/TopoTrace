@@ -38,7 +38,7 @@
         map.addListener('click',function(e){
             if (map.points.length<2) {
                 var p = new google.maps.Marker({
-                    position: {lat: e.latLng.H, lng: e.latLng.L},
+                    position: e.latLng,
                     map: map
                 });
                 map.points.push(p);
