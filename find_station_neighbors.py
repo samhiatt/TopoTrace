@@ -36,7 +36,7 @@ for station in stationsQuery:
     if neighborQuery.count()==np.nan:
         print "Station %s has no nearby stations."%station['_id']
     else:
-        print "%s's %i neighbors:"%(station['_id'],neighborQuery.count())
+        print "%s's %i nearby stations:"%(station['_id'],neighborQuery.count())
         c0 = station['loc']['coordinates']
         stationLoc = LatLon(c0[1],c0[0])
         neighborCount = 0
@@ -52,9 +52,12 @@ for station in stationsQuery:
                 - np.max([elevs[0],elevs[len(elevProfile)-1]])
             neighborLoc = LatLon(c1[1],c1[0])
             dist = stationLoc.distance(neighborLoc)
+            print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
+            if relativePeakHeight>TOPO_THRESHOLD:
+                print("%s blocked by hill."%neighbor['_id'])
+            else:
+                print("%s is a neighbor"%neighbor['_id'])
             # TODO:
-            #  - check relativePeakHeight against threshold
             #  - check proximity to water
 
-            print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
     print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
