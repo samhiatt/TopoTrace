@@ -87,16 +87,42 @@ function initMap() {
     });
 }
 function locationSearch(searchForm){
-    var searchValue = document.getElementById('searchInput').value;
-    d3.json("/getFilteredNeighbors?stationId="+searchValue,function(err,data){
+    var stationId = document.getElementById('searchInput').value;
+    stationId = stationId.toUpperCase();
+    showNeighbors(stationId);
+}
+function addMarker(point,color,title){
+    var stationLocation = new google.maps.LatLng(point.coordinates[1],point.coordinates[0]);
+    var marker = new google.maps.Marker({
+        position: stationLocation,
+        id: title,
+        title: title,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 3,
+            strokeColor: color
+        },
+        zIndex: 1000
+    });
+    marker.addListener('click',function(){
+        showNeighbors(this.id);
+    });
+    marker.setMap(map);
+    if (!map.markers) map.markers = [];
+    map.markers.push(marker);
+    return marker;
+}
+function showNeighbors(stationId){
+    d3.selectAll("form#search input").attr('disabled',true);
+    clearMarkers();
+    d3.json("/getFilteredNeighbors?stationId="+stationId,function(err,data){
+        d3.selectAll("form#search input").attr('disabled',null);
         if (err) throw err;
         console.log("Got station:",data);
-        map.markers=map.markers||[];
         if ((((data||{}).station||{}).loc||{}).coordinates){
             var stationLocation = new google.maps.LatLng(data.station.loc.coordinates[1],data.station.loc.coordinates[0]);
             map.setCenter(stationLocation);
-            map.setZoom(10);
-            map.markers.forEach(function(highlight){ highlight.setMap(null);});
+            map.setZoom(12);
             if (((data||{}).neighbors||{}).forEach) {
                 data.neighbors.forEach(function(neighbor){
                     addMarker(neighbor.loc,'gray',neighbor._id);
@@ -112,23 +138,10 @@ function locationSearch(searchForm){
             console.log("Error finding location for "+searchValue);
         }
     });
-};
-function addMarker(point,color,title){
-    var stationLocation = new google.maps.LatLng(point.coordinates[1],point.coordinates[0]);
-    var marker = new google.maps.Marker({
-        position: stationLocation,
-        title: title,
-        icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 3,
-            strokeColor: color
-        },
-        zIndex: 1000
-    });
-    marker.setMap(map);
-    if (!map.markers) map.markers = [];
-    map.markers.push(marker);
-    return marker;
+}
+function clearMarkers(){
+    map.markers=map.markers||[];
+    map.markers.forEach(function(marker){ marker.setMap(null);});
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBpdEZexiqBNCsOWSSGntxsJGUnjFC4Gs&callback=initMap"
