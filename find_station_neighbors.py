@@ -22,7 +22,7 @@ topodb = client['topo']
 water = topodb['topo.water']
 
 
-def getFilteredNeighbors(station):
+def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD):
     # t0waterQuery = datetime.now()
     waterQuery = water.find({
         "geometry":{"$near":{
@@ -71,8 +71,9 @@ def getFilteredNeighbors(station):
             # print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
             hillNeighbors = True
             waterNeighbors = False
-            if relativePeakHeight>TOPO_THRESHOLD:
+            if relativePeakHeight>topoThresh:
                 hillNeighbors=False
+            # TODO: Check elev difference between the two stations (should be <= 200ft)
             # str = " "
             # if hillNeighbors: str=" not"
             # print("%s is%s blocked by hill. %.6fs"%(neighbor['_id'],str,(datetime.now()-t0topoQuery).total_seconds()))

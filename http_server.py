@@ -7,6 +7,8 @@ from find_station_neighbors import getFilteredNeighbors, stations
 
 PORT = 9000
 
+FEET_PER_METER = 3.28084
+
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_HEAD(s):
         s.send_response(200)
@@ -66,6 +68,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             query = parse_qs(req.query)
             try:
                 stationId = query['stationId'][0]
+                topoThresh = query['topoThresh']
+                if len(topoThresh)>0: topoThresh = float(topoThresh[0])/FEET_PER_METER
                 station = stations.find_one({
                     "_id":stationId
                 },{
@@ -75,7 +79,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 s.send_response(500)
                 return
             if station:
-                filteredNeighbors, neighbors = getFilteredNeighbors(station)
+                filteredNeighbors, neighbors = getFilteredNeighbors(station,topoThresh=topoThresh)
                 resp={"station":station,
                       "filteredNeighbors":filteredNeighbors,
                       "neighbors":neighbors

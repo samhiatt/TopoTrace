@@ -23,7 +23,8 @@
 </head>
 <body>
 <form id="search" onsubmit="event.preventDefault(); locationSearch(this);">
-    <input id="searchInput" type="text" name="searchInput">
+    <input id="searchInput" type="text" name="searchInput" value="KCAHALFM16">
+    <input id="topoThresh" type="text" name="topoThresh" value="400">
     <input type="submit" value="Search">
 </form>
 <div id="map"></div>
@@ -88,8 +89,9 @@ function initMap() {
 }
 function locationSearch(searchForm){
     var stationId = document.getElementById('searchInput').value;
+    var topoThresh = parseInt(document.getElementById('topoThresh').value);
     stationId = stationId.toUpperCase();
-    showNeighbors(stationId);
+    showNeighbors(stationId,topoThresh);
 }
 function addMarker(point,color,title){
     var stationLocation = new google.maps.LatLng(point.coordinates[1],point.coordinates[0]);
@@ -112,10 +114,12 @@ function addMarker(point,color,title){
     map.markers.push(marker);
     return marker;
 }
-function showNeighbors(stationId){
+function showNeighbors(stationId,topoThresh){
+    if (!topoThresh) topoThresh = 400; // 400 feet
     d3.selectAll("form#search input").attr('disabled',true);
     clearMarkers();
-    d3.json("/getFilteredNeighbors?stationId="+stationId,function(err,data){
+    var url = "/getFilteredNeighbors?stationId="+stationId+"&topoThresh="+topoThresh;
+    d3.json(url,function(err,data){
         d3.selectAll("form#search input").attr('disabled',null);
         if (err) throw err;
         console.log("Got station:",data);
