@@ -29,6 +29,7 @@
 </form>
 <div id="map"></div>
 <script>
+var FEET_PER_METER = 3.28084;
 var map;
 var colors = [
     "#0008ff",
@@ -68,6 +69,7 @@ function initMap() {
                         var colorIndex = parseInt(((point.elev-data.minElevation)/(data.maxElevation-data.minElevation))*7);
                         var marker = new google.maps.Marker({
                             position: new google.maps.LatLng(point.lat,point.lon),
+                            title:parseFloat(point.elev)*FEET_PER_METER+'ft',
                             map: map,
                             icon: {
                                 path: google.maps.SymbolPath.CIRCLE,

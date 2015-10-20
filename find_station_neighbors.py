@@ -69,11 +69,11 @@ def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD):
             neighborLoc = LatLon(c1[1],c1[0])
             dist = stationLoc.distance(neighborLoc)
             # print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
+            elevDiff = abs(elevs[0]-elevs[len(elevProfile)-1])
             hillNeighbors = True
             waterNeighbors = False
-            if relativePeakHeight>topoThresh:
+            if relativePeakHeight>topoThresh or elevDiff > ELEV_THRESHOLD:
                 hillNeighbors=False
-            # TODO: Check elev difference between the two stations (should be <= 200ft)
             # str = " "
             # if hillNeighbors: str=" not"
             # print("%s is%s blocked by hill. %.6fs"%(neighbor['_id'],str,(datetime.now()-t0topoQuery).total_seconds()))
