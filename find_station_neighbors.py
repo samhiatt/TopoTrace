@@ -9,7 +9,7 @@ from LatLon import LatLon
 
 FEET_PER_METER = 3.28084
 ELEV_THRESHOLD = 200/FEET_PER_METER
-TOPO_THRESHOLD = 500/FEET_PER_METER
+TOPO_THRESHOLD = 400/FEET_PER_METER
 DISTANCE_THRESHOLD = 15000
 WATER_DISTANCE_THRESHOLD = 2000/FEET_PER_METER
 
@@ -88,7 +88,7 @@ def getFilteredNeighbors(station):
             # if (waterNeighbors and hillNeighbors): str = " "
             # else: str = " not"
             # print("%s and %s are%s neighbors"%(neighbor['_id'],station['_id'],str))
-            filteredNeighbors.append(neighbor['_id'])
+            if (waterNeighbors and hillNeighbors): filteredNeighbors.append(neighbor)
         print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
         return filteredNeighbors
 
@@ -101,7 +101,7 @@ if __name__=='__main__':
     t0=datetime.now()
     for station in stationsQuery:
         cnt+=1
-        filteredNeighbors = getFilteredNeighbors(station)
+        filteredNeighbors = [s['_id'] for s in getFilteredNeighbors(station)]
         print("Done with station %s, %i of %i"%(station['_id'],cnt,stationsQuery.count()))
         stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}})
         print('\n')

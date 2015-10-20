@@ -12,10 +12,20 @@
       #map {
         height: 100%;
       }
+      form#search {
+        position: absolute;
+        top: 10px;
+        left: 120px;
+        z-index: 2;
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 </head>
 <body>
+<form id="search" onsubmit="event.preventDefault(); locationSearch(this);">
+    <input id="searchInput" type="text" name="searchInput">
+    <input type="submit" value="Search">
+</form>
 <div id="map"></div>
 <script>
     var map;
@@ -76,6 +86,53 @@
             }
         });
     }
+    function locationSearch(searchForm){
+	var searchValue = document.getElementById('searchInput').value;
+	d3.json("/getFilteredNeighbors?stationId="+searchValue,function(err,data){
+		if (err) throw err;
+		console.log("Got station:",data);
+        map.markers=map.markers||[];
+		if ((((data||{}).station||{}).loc||{}).coordinates){
+			var stationLocation = new google.maps.LatLng(data.station.loc.coordinates[1],data.station.loc.coordinates[0]);
+			map.setCenter(stationLocation);
+			map.setZoom(10);
+			var marker = new google.maps.Marker({
+				position: stationLocation,
+				icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 3,
+                    strokeColor: 'red'
+                },
+				zIndex: 1000,
+				clickable:false
+			});
+			marker.setMap(map);
+			if (!map.markers) map.markers = [];
+			map.markers.forEach(function(highlight){ highlight.setMap(null);});
+			map.markers.push(marker);
+            if (((data||{}).filteredNeighbors||{}).forEach){
+                data.filteredNeighbors.forEach(function(neighbor){
+                    var stationLocation = new google.maps.LatLng(neighbor.loc.coordinates[1],neighbor.loc.coordinates[0]);
+                    var marker = new google.maps.Marker({
+                        position: stationLocation,
+//                        id: neighbor._id,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 3,
+                            strokeColor: 'blue'
+                        },
+                        zIndex: 1000,
+                        clickable:false
+                    });
+                    marker.setMap(map);
+                    map.markers.push(marker);
+                });
+            }
+		} else {
+			console.log("Error finding location for "+searchValue);
+		}
+	});
+};
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBpdEZexiqBNCsOWSSGntxsJGUnjFC4Gs&callback=initMap"
         async defer></script>
