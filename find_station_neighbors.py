@@ -11,17 +11,29 @@ FEET_PER_METER = 3.28084
 ELEV_THRESHOLD = 200/FEET_PER_METER
 TOPO_THRESHOLD = 500/FEET_PER_METER
 DISTANCE_THRESHOLD = 15000
+WATER_DISTANCE_THRESHOLD = 2000/FEET_PER_METER
 
 client = MongoClient('localhost',27017)
 db = client['stationdata']
 stations=db['stations']
 stations.ensure_index([("loc","2dsphere")])
 
+topodb = client['topo']
+water = topodb['topo.water']
+
 stationsQuery = stations.find({
         "_id":re.compile('^KCASANFR')
     }).limit(5)
 print "%i stations"%stationsQuery.count()
 for station in stationsQuery:
+    t0waterQuery = datetime.now()
+    waterQuery = water.find({
+        "geometry":{"$near":{
+            "$geometry": station['loc'],
+            "$maxDistance": WATER_DISTANCE_THRESHOLD}
+        }})
+    stationNearWater = waterQuery.count()>0
+    print("%s, %i bodies of water, found in %.6fs"%(station['_id'],waterQuery.count(),(datetime.now()-t0waterQuery).total_seconds()))
     # Get nearby stations
     t0neighborQuery = datetime.now()
     neighborQuery = stations.find({
@@ -29,7 +41,7 @@ for station in stationsQuery:
             "loc":{"$near":{"$geometry":station['loc'],
                "$maxDistance":DISTANCE_THRESHOLD}
               }
-        }).limit(5)
+        })#.limit(5)
     t0NeighborLoop = datetime.now()
     dt = datetime.now() - t0neighborQuery
     print("Neighbor query: %.6fs"%dt.total_seconds())
@@ -43,6 +55,7 @@ for station in stationsQuery:
         for neighbor in neighborQuery:
             neighborCount+=1
             c1 = neighbor['loc']['coordinates']
+            t0topoQuery = datetime.now()
             elevProfile = DataFrame(getElevationProfile(c0[0],c0[1],c1[0],c1[1]),
                                     columns=('lon','lat','elev'))
             elevs=elevProfile['elev']
@@ -53,11 +66,30 @@ for station in stationsQuery:
             neighborLoc = LatLon(c1[1],c1[0])
             dist = stationLoc.distance(neighborLoc)
             print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
+            hillNeighbors = True
+            waterNeighbors = False
             if relativePeakHeight>TOPO_THRESHOLD:
-                print("%s blocked by hill."%neighbor['_id'])
-            else:
-                print("%s is a neighbor"%neighbor['_id'])
-            # TODO:
-            #  - check proximity to water
-
+                hillNeighbors=False
+            str = " "
+            if hillNeighbors: str=" not"
+            print("%s is%s blocked by hill. %.6fs"%(neighbor['_id'],str,(datetime.now()-t0topoQuery).total_seconds()))
+            t0waterQuery = datetime.now()
+            waterQuery = water.find({
+                "geometry":{"$near":{
+                    "$geometry": neighbor['loc'],
+                    "$maxDistance": WATER_DISTANCE_THRESHOLD}
+                }})
+            print ("%s has %i bodies of water within %i m. %.6fs"%(
+                neighbor['_id'],
+                waterQuery.count(),
+                WATER_DISTANCE_THRESHOLD,
+                (datetime.now()-t0waterQuery).total_seconds()
+            ))
+            neighborNearWater = waterQuery.count()>0
+            if (stationNearWater and neighborNearWater) or (not stationNearWater and not neighborNearWater):
+                waterNeighbors = True
+            if (waterNeighbors and hillNeighbors): str = " "
+            else: str = " not"
+            print("%s and %s are%s neighbors"%(neighbor['_id'],station['_id'],str))
+            # TODO: Save verdict to db
     print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
