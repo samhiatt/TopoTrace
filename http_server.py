@@ -3,8 +3,7 @@ import BaseHTTPServer
 import json
 from urlparse import urlparse, parse_qs
 from GTOPO30 import getElevation, getElevationProfile
-from find_station_neighbors import getFilteredNeighbors, stations, water
-from LatLon import LatLon
+from find_station_neighbors import getFilteredNeighbors, stations
 
 PORT = 9000
 
@@ -86,38 +85,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                       "neighbors":neighbors
                       }
             else: resp={}
-            s.send_response(200)
-            s.send_header("Content-type", "application/json")
-            s.end_headers()
-            s.wfile.write(json.dumps(resp))
-        elif req.path.startswith('/getWater'):
-            query = parse_qs(req.query)
-            try:
-                minlat=float(query['minlat'][0])
-                maxlat=float(query['maxlat'][0])
-                minlon=float(query['minlon'][0])
-                maxlon=float(query['maxlon'][0])
-            except:
-                s.send_response(500)
-                return
-            ll=LatLon(minlat,minlon)
-            ur=LatLon(maxlat,maxlon)
-            center=LatLon(minlat+(maxlat-minlat)/2.,minlon+(maxlon-minlon)/2.)
-            r=ll.distance(ur)/2
-            waterBodies = water.find({
-                "geometry":{
-                    "$nearSphere":[float(center.lon),float(center.lat)],
-                    "$maxDistance": r }
-            })
-            print {
-                "geometry":{
-                    "$nearSphere":[float(center.lon),float(center.lat)],
-                    "$maxDistance": r }
-            }
-            resp = [{
-                    "geometry":waterBody['geometry'],
-                    "properties":waterBody['properties']
-                } for waterBody in waterBodies]
             s.send_response(200)
             s.send_header("Content-type", "application/json")
             s.end_headers()
