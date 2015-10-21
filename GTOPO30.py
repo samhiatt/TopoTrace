@@ -1,43 +1,15 @@
 from osgeo import gdal
 
 class GTOPO30:
-    filenames = [
-        ["W180N90.DEM","W140N90.DEM","W100N90.DEM","W060N90.DEM","W020N90.DEM","E020N90.DEM","E060N90.DEM","E100N90.DEM","E140N90.DEM"],
-        ["W180N40.DEM","W140N40.DEM","W100N40.DEM","W060N40.DEM","W020N40.DEM","E020N40.DEM","E060N40.DEM","E100N40.DEM","E140N40.DEM"],
-        ["W180S10.DEM","W140S10.DEM","W100S10.DEM","W060S10.DEM","W020S10.DEM","E020S10.DEM","E060S10.DEM","E100S10.DEM","E140S10.DEM"],
-        ["W180S60.DEM","W120S60.DEM","W060S60.DEM","W000S60.DEM","E060S60.DEM","E120S60.DEM"]
-    ]
-    dxS60 = 60
-
-    x0 = -180
-    y0 = 90
-    dx = 40
-    dy = -50
-
-    datasets=[
-        [False for x in range(9)],
-        [False for x in range(9)],
-        [False for x in range(9)],
-        [False for x in range(6)]
-    ]
-
-    def getDataset(self,lon,lat):
-        y = int((lat-self.y0)/self.dy)
-        if lat > -60:
-            x = int((lon-self.x0)/self.dx)
-        else:
-            x = int((lon-self.x0)/self.dxS60)
-        if self.datasets[y][x] == False:
-            self.datasets[y][x] = gdal.Open("data/"+self.filenames[y][x])
-        return self.datasets[y][x]
+    def __init__(self):
+        self.ds = gdal.Open("global_dem.vrt")
 
     def getElevation(self,lon,lat):
-        ds = self.getDataset(lon,lat)
          # proj is WGS84, so no reprojection/rotation necessary. Just use geo-transform.
-        gt = ds.GetGeoTransform()
+        gt = self.ds.GetGeoTransform()
         x = int((lon-gt[0])/gt[1])
         y = int((lat-gt[3])/gt[5])
-        return ds.ReadAsArray(x,y,1,1)[0][0]
+        return self.ds.ReadAsArray(x,y,1,1)[0][0]
 
     def getElevationProfile(self, p0, p1):
         points = self.bresenham(p0, p1)
@@ -51,16 +23,14 @@ class GTOPO30:
         :param LatLon p1:
         :return: [gridCell]
         """
+        x0 = -180
+        y0 = 90
         dy = -1/120.
         dx = 1/120.
-        y0 = p0.lat.decimal_degree
-        x0 = p0.lon.decimal_degree
-        y1 = p1.lat.decimal_degree
-        x1 = p1.lon.decimal_degree
-        y0grid = ( y0 / dy ) - ( self.y0 / dy )
-        y1grid = ( y1 / dy ) - ( self.y0 / dy )
-        x0grid = ( x0 / dx ) - ( self.x0 / dx )
-        x1grid = ( x1 / dx ) - ( self.x0 / dx )
+        y0grid = ( p0.lat.decimal_degree / dy ) - ( y0 / dy )
+        y1grid = ( p1.lat.decimal_degree / dy ) - ( y0 / dy )
+        x0grid = ( p0.lon.decimal_degree / dx ) - ( x0 / dx )
+        x1grid = ( p1.lon.decimal_degree / dx ) - ( x0 / dx )
         if y1grid>y0grid: yPositive = True
         else: yPositive = False
         if x1grid>x0grid: xPositive = True
