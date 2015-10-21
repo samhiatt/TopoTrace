@@ -1,0 +1,271 @@
+<VRTDataset rasterXSize="43200" rasterYSize="21600">
+  <SRS>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9108"]],AUTHORITY["EPSG","4326"]]</SRS>
+  <GeoTransform> -1.8000000000000000e+02,  8.3333333333300008e-03,  0.0000000000000000e+00,  9.0000000000000000e+01,  0.0000000000000000e+00, -8.3333333333300008e-03</GeoTransform>
+  <VRTRasterBand dataType="Int16" band="1">
+    <NoDataValue>-9.99900000000000E+03</NoDataValue>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W180N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W140N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="4800" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W100N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="9600" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W060N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="14400" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W020N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="19200" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E020N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="24000" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E060N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="28800" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E100N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="33600" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E140N90.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="38400" yOff="0" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W180N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="0" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W140N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="4800" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W100N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="9600" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W060N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="14400" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W020N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="19200" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E020N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="24000" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E060N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="28800" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E100N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="33600" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E140N40.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="38400" yOff="6000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W180S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="0" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W140S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="4800" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W100S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="9600" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W060S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="14400" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W020S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="19200" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E020S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="24000" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E060S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="28800" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E100S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="33600" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E140S10.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="4800" RasterYSize="6000" DataType="Int16" BlockXSize="4800" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="4800" ySize="6000" />
+      <DstRect xOff="38400" yOff="12000" xSize="4800" ySize="6000" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W180S60.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="7200" RasterYSize="3600" DataType="Int16" BlockXSize="7200" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="7200" ySize="3600" />
+      <DstRect xOff="0" yOff="18000" xSize="7200" ySize="3600" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W120S60.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="7200" RasterYSize="3600" DataType="Int16" BlockXSize="7200" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="7200" ySize="3600" />
+      <DstRect xOff="7200" yOff="18000" xSize="7200" ySize="3600" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W060S60.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="7200" RasterYSize="3600" DataType="Int16" BlockXSize="7200" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="7200" ySize="3600" />
+      <DstRect xOff="14400" yOff="18000" xSize="7200" ySize="3600" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/W000S60.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="7200" RasterYSize="3600" DataType="Int16" BlockXSize="7200" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="7200" ySize="3600" />
+      <DstRect xOff="21600" yOff="18000" xSize="7200" ySize="3600" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E060S60.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="7200" RasterYSize="3600" DataType="Int16" BlockXSize="7200" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="7200" ySize="3600" />
+      <DstRect xOff="28800" yOff="18000" xSize="7200" ySize="3600" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">data/E120S60.DEM</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="7200" RasterYSize="3600" DataType="Int16" BlockXSize="7200" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="7200" ySize="3600" />
+      <DstRect xOff="36000" yOff="18000" xSize="7200" ySize="3600" />
+      <NODATA>-9999</NODATA>
+    </ComplexSource>
+  </VRTRasterBand>
+</VRTDataset>

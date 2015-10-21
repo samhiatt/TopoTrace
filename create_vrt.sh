@@ -1,0 +1,1 @@
+gdalbuildvrt -input_file_list dem_list.txt global_dem.vrt
