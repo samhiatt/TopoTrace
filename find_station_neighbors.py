@@ -18,7 +18,7 @@ stations=db['stations']
 stations.ensure_index([("loc","2dsphere")])
 
 
-def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD):
+def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD,elevThresh=ELEV_THRESHOLD):
     # Get nearby stations
     # t0neighborQuery = datetime.now()
     neighborQuery = stations.find({
@@ -58,7 +58,7 @@ def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD):
             neighbor['distance'] = stationLoc.distance(neighborLoc)
             # print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
             elevDiff = abs(elevs[0]-elevs[len(elevProfile)-1])
-            if relativePeakHeight<topoThresh and elevDiff < ELEV_THRESHOLD:
+            if relativePeakHeight<topoThresh and elevDiff < elevThresh:
                 filteredNeighbors.append(neighbor)
         print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
         return filteredNeighbors, neighbors

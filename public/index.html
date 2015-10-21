@@ -4,28 +4,33 @@
     <meta charset="UTF-8">
     <title>Elevation Profile</title>
     <style>
-      html, body {
+    html, body {
         height: 100%;
         margin: 0;
         padding: 0;
-      }
-      #map {
+    }
+    #map {
         height: 100%;
-      }
-      form#search {
+    }
+    form#search {
         position: absolute;
         top: 10px;
         left: 120px;
         z-index: 2;
-      }
+        background-color: whitesmoke;
+        padding: 3px;
+    }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 </head>
 <body>
 <form id="search" onsubmit="event.preventDefault(); locationSearch(this);">
     <input id="searchInput" type="text" name="searchInput" value="KCAHALFM16">
-    <input id="topoThresh" type="text" name="topoThresh" value="400">
     <input type="submit" value="Search">
+    <label for="topoThresh"> &nbsp &nbsp Max Relative Peak Heigh (ft):</label>
+    <input id="topoThresh" type="text" name="topoThresh" value="400">
+    <label for="elevThresh"> &nbsp &nbsp Max Elev Difference (ft):</label>
+    <input id="elevThresh" type="text" name="elevThresh" value="200">
 </form>
 <div id="map"></div>
 <script>
@@ -91,9 +96,8 @@ function initMap() {
 }
 function locationSearch(searchForm){
     var stationId = document.getElementById('searchInput').value;
-    var topoThresh = parseInt(document.getElementById('topoThresh').value);
     stationId = stationId.toUpperCase();
-    showNeighbors(stationId,topoThresh);
+    showNeighbors(stationId);
 }
 function addMarker(point,color,title){
     var stationLocation = new google.maps.LatLng(point.coordinates[1],point.coordinates[0]);
@@ -109,6 +113,7 @@ function addMarker(point,color,title){
         zIndex: 1000
     });
     marker.addListener('click',function(){
+        d3.select("form#search #searchInput").attr("value",this.id);
         showNeighbors(this.id);
     });
     marker.setMap(map);
@@ -116,11 +121,14 @@ function addMarker(point,color,title){
     map.markers.push(marker);
     return marker;
 }
-function showNeighbors(stationId,topoThresh){
-    if (!topoThresh) topoThresh = 400; // 400 feet
+function showNeighbors(stationId){
+    var topoThresh = parseInt(document.getElementById('topoThresh').value);
+    var elevThresh = parseInt(document.getElementById('elevThresh').value);
+    if (!topoThresh && topoThresh!=0) topoThresh = 400; // default 400 feet
+    if (!elevThresh && elevThresh!=0) elevThresh = 200; // default 200 feet
     d3.selectAll("form#search input").attr('disabled',true);
     clearMarkers();
-    var url = "/getFilteredNeighbors?stationId="+stationId+"&topoThresh="+topoThresh;
+    var url = "/getFilteredNeighbors?stationId="+stationId+"&topoThresh="+topoThresh+"&elevThresh="+elevThresh;
     d3.json(url,function(err,data){
         d3.selectAll("form#search input").attr('disabled',null);
         if (err) throw err;

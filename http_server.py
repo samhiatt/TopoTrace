@@ -72,6 +72,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 stationId = query['stationId'][0]
                 topoThresh = query['topoThresh']
                 if len(topoThresh)>0: topoThresh = float(topoThresh[0])/FEET_PER_METER
+                elevThresh = query['elevThresh']
+                if len(elevThresh)>0: elevThresh = float(elevThresh[0])/FEET_PER_METER
                 station = stations.find_one({
                     "_id":stationId
                 },{
@@ -81,7 +83,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 s.send_response(500)
                 return
             if station:
-                filteredNeighbors, neighbors = getFilteredNeighbors(station,topoThresh=topoThresh)
+                filteredNeighbors, neighbors = getFilteredNeighbors(station,topoThresh=topoThresh,elevThresh=elevThresh)
                 resp={"station":station,
                       "filteredNeighbors":filteredNeighbors,
                       "neighbors":neighbors
