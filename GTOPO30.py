@@ -39,22 +39,24 @@ class GTOPO30:
         y = int((lat-gt[3])/gt[5])
         return ds.ReadAsArray(x,y,1,1)[0][0]
 
-    def getElevationProfile(self,x0, y0, x1, y1):
-        points = self.bresenham(x0, y0, x1, y1)
+    def getElevationProfile(self, p0, p1):
+        points = self.bresenham(p0, p1)
         return [(p[0],p[1],getElevation(p[0],p[1])) for p in points]
 
-    def bresenham(self, x0, y0, x1, y1):
+    def bresenham(self, p0, p1):
         """
         Bresenham's algorithm for finding approximate grid cells that intersect line from point(x0,y0) to point(x1,y1)
         See https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-        :param int x0:
-        :param int y0:
-        :param int x1:
-        :param int y1:
+        :param LatLon p0:
+        :param LatLon p1:
         :return: [gridCell]
         """
         dy = -1/120.
         dx = 1/120.
+        y0 = p0.lat.decimal_degree
+        x0 = p0.lon.decimal_degree
+        y1 = p1.lat.decimal_degree
+        x1 = p1.lon.decimal_degree
         y0grid = ( y0 / dy ) - ( self.y0 / dy )
         y1grid = ( y1 / dy ) - ( self.y0 / dy )
         x0grid = ( x0 / dx ) - ( self.x0 / dx )
@@ -100,9 +102,5 @@ def getElevation(lon,lat):
     if type(lon)==str: lon = float(lon)
     return gtopo.getElevation(lon,lat)
 
-def getElevationProfile(x0, y0, x1, y1):
-    if type(x0)==str: x0 = float(x0)
-    if type(y0)==str: y0 = float(y0)
-    if type(x1)==str: x1 = float(x1)
-    if type(y1)==str: y1 = float(y1)
-    return gtopo.getElevationProfile(x0, y0, x1, y1)
+def getElevationProfile(p0,p1):
+    return gtopo.getElevationProfile(p0,p1)
