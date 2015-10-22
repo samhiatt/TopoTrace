@@ -74,6 +74,6 @@ if __name__=='__main__':
         cnt+=1
         filteredNeighbors = [s['_id'] for s in getFilteredNeighbors(station)[0]]
         print("Done with station %s, %i of %i"%(station['_id'],cnt,stationsQuery.count()))
-        stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}})
+        stations.update({"_id":station['_id']},{"$set":{"filteredNeighbors":filteredNeighbors}},upsert=True)
         print('')
     print("Done. %is"%(datetime.now()-t0).total_seconds())
