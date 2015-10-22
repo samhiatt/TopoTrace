@@ -1,10 +1,15 @@
 from osgeo import gdal
 from LatLon import LatLon
+from datetime import datetime
 
 class GTOPO30:
     def __init__(self):
         self.ds = gdal.Open("global_dem.vrt")
         self.gt = self.ds.GetGeoTransform()
+        print("Reading GTOPO30 grid")
+        t0 = datetime.now()
+        self.array = self.ds.ReadAsArray()
+        print("Done reading GTOPO30 grid. %.2fs"%(datetime.now()-t0).total_seconds())
 
     def toPixelCoords(self, latLon):
         gt = self.gt
@@ -23,30 +28,36 @@ class GTOPO30:
         x0, y0 = self.toPixelCoords(latLon)
         return self.ds.ReadAsArray(x0,y0,1,1)[0][0]
 
-    def getElevationArray(self, x0, y0, x1, y1):
-        xSize = int(x1-x0)
-        ySize = int(y1-y0)
-        if x1<x0: x=x1
-        else: x=x0
-        if y1<y0: y=y1
-        else: y=y0
-        return {
-            "array":self.ds.ReadAsArray(int(x),int(y),abs(xSize)+1,abs(ySize)+1),
-            "x0":x,
-            "y0":y
-        }
+    # def getElevationArray(self, x0, y0, x1, y1):
+    #     xSize = int(x1-x0)
+    #     ySize = int(y1-y0)
+    #     if x1<x0: x=x1
+    #     else: x=x0
+    #     if y1<y0: y=y1
+    #     else: y=y0
+    #     return {
+    #         "array":self.array[y:y+abs(ySize)+1][x:x+abs(xSize)+1],
+    #         "x0": x,
+    #         "y0": y
+    #     }
+        # return {
+        #     "array":self.ds.ReadAsArray(int(x),int(y),abs(xSize)+1,abs(ySize)+1),
+        #     "x0":x,
+        #     "y0":y
+        # }
 
     def getElevationProfile(self, latLon0, latLon1):
         pc0 = self.toPixelCoords(latLon0)
         pc1 = self.toPixelCoords(latLon1)
         points = self.bresenham(pc0, pc1)
-        elev = self.getElevationArray(points[0][0],points[0][1],points[-1][0],points[-1][1])
-        x0 = elev['x0']
-        y0 = elev['y0']
+        # elev = self.getElevationArray(points[0][0],points[0][1],points[-1][0],points[-1][1])
+        # x0 = elev['x0']
+        # y0 = elev['y0']
         def getElev(x,y):
-            x -= x0
-            y -= y0
-            return elev['array'][int(y)][int(x)]
+            # x -= x0
+            # y -= y0
+            # return elev['array'][int(y)][int(x)]
+            return self.array[y][x]
         return [(self.toLatLon(p[0],p[1]).lon.decimal_degree,self.toLatLon(p[0],p[1]).lat.decimal_degree,getElev(p[0],p[1])) for p in points]
 
     def bresenham(self, p0, p1):
