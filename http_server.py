@@ -4,7 +4,6 @@ import json
 from urlparse import urlparse, parse_qs
 from GTOPO30 import getElevation, getElevationProfile
 from find_station_neighbors import getFilteredNeighbors, stations
-from LatLon import LatLon
 
 PORT = 9000
 
@@ -26,9 +25,11 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         elif req.path.startswith('/elevationProfile'):
             query = parse_qs(req.query)
             try:
-                p0 = LatLon(query['lat0'][0],query['lon0'][0])
-                p1 = LatLon(query['lat1'][0],query['lon1'][0])
-                elevProfile = getElevationProfile(p0,p1)
+                elevProfile = getElevationProfile(
+                    float(query['lon0'][0]),
+                    float(query['lat0'][0]),
+                    float(query['lon1'][0]),
+                    float(query['lat1'][0]))
             except:
                 s.send_response(500)
                 return

@@ -11,6 +11,6 @@ args=parser.parse_args()
 
 p0 = LatLon(args.lat0,args.lon0)
 p1 = LatLon(args.lat1,args.lon1)
-elevProfile = getElevationProfile(p0,p1)
+elevProfile = getElevationProfile(float(args.lon0),float(args.lat0),float(args.lon1),float(args.lat1))
 elevProfile = [{"lon":x,"lat":y,"elev":float(z)} for x,y,z in elevProfile]
 print json.dumps(elevProfile)

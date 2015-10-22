@@ -47,7 +47,10 @@ def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD,elevThresh=ELEV_THRES
             c1 = neighbor['loc']['coordinates']
             neighborLoc = LatLon(c1[1],c1[0])
             # t0topoQuery = datetime.now()
-            elevProfile = np.array(getElevationProfile(stationLoc,neighborLoc))
+            elevProfile = np.array(getElevationProfile(stationLoc.lon.decimal_degree,
+                                                       stationLoc.lat.decimal_degree,
+                                                       neighborLoc.lon.decimal_degree,
+                                                       neighborLoc.lat.decimal_degree))
             elevs=elevProfile[:,2]
             #print (elevProfile)
             relativePeakHeight = elevs.max() \

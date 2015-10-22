@@ -1,26 +1,25 @@
 from osgeo import gdal
-from LatLon import LatLon
 
 class GTOPO30:
     def __init__(self):
         self.ds = gdal.Open("global_dem.vrt")
         self.gt = self.ds.GetGeoTransform()
 
-    def toPixelCoords(self, latLon):
+    def toPixelCoords(self, lon, lat):
         gt = self.gt
-        x = (latLon.lon.decimal_degree - gt[0])/gt[1]
-        y = (latLon.lat.decimal_degree - gt[3])/gt[5]
+        x = (lon - gt[0])/gt[1]
+        y = (lat - gt[3])/gt[5]
         return (x,y)
 
     def toLatLon(self, x, y):
         gt = self.gt
         lat = gt[5]*y + gt[3]
         lon = gt[1]*x + gt[0]
-        return LatLon(lat,lon)
+        return (lat,lon)
 
-    def getElevation(self, latLon):
+    def getElevation(self, lon, lat):
         # proj is WGS84, so no reprojection/rotation necessary. Just use geo-transform.
-        x0, y0 = self.toPixelCoords(latLon)
+        x0, y0 = self.toPixelCoords(lon,lat)
         return self.ds.ReadAsArray(x0,y0,1,1)[0][0]
 
     def getElevationArray(self, x0, y0, x1, y1):
@@ -36,9 +35,9 @@ class GTOPO30:
             "y0":y
         }
 
-    def getElevationProfile(self, latLon0, latLon1):
-        pc0 = self.toPixelCoords(latLon0)
-        pc1 = self.toPixelCoords(latLon1)
+    def getElevationProfile(self, lon0,lat0,lon1,lat1):
+        pc0 = self.toPixelCoords(lon0,lat0)
+        pc1 = self.toPixelCoords(lon1,lat1)
         points = self.bresenham(pc0, pc1)
         elev = self.getElevationArray(points[0][0],points[0][1],points[-1][0],points[-1][1])
         x0 = elev['x0']
@@ -49,7 +48,7 @@ class GTOPO30:
             z = elev['array'][int(y)][int(x)]
             if z == -9999: return 0
             else: return z
-        return [(self.toLatLon(p[0],p[1]).lon.decimal_degree,self.toLatLon(p[0],p[1]).lat.decimal_degree,getElev(p[0],p[1])) for p in points]
+        return [(self.toLatLon(p[0],p[1])[1],self.toLatLon(p[0],p[1])[0],getElev(p[0],p[1])) for p in points]
 
     def bresenham(self, p0, p1):
         """
@@ -98,8 +97,7 @@ def getElevation(lon,lat):
     """
     if type(lat)==str: lat = float(lat)
     if type(lon)==str: lon = float(lon)
-    p = LatLon(lat,lon)
-    return gtopo.getElevation(p)
+    return gtopo.getElevation(lon,lat)
 
-def getElevationProfile(p0,p1):
-    return gtopo.getElevationProfile(p0,p1)
+def getElevationProfile(lon0,lat0,lon1,lat1):
+    return gtopo.getElevationProfile(lon0,lat0,lon1,lat1)
