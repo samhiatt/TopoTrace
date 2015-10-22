@@ -6,6 +6,7 @@ db = client['stationdata']
 stations=db['stations']
 
 stationsCursor = stations.find({
+                                    "loc":{"$exists":1},
                                     "updated":{"$exists":1}
                                 },{
                                     "loc":1
