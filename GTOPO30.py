@@ -18,36 +18,49 @@ class GTOPO30:
         lon = gt[1]*x + gt[0]
         return LatLon(lat,lon)
 
-    def getElevation(self, latLon):
+    def getElevation(self, x, y):
         # proj is WGS84, so no reprojection/rotation necessary. Just use geo-transform.
-        x0, y0 = self.toPixelCoords(latLon)
-        return self.ds.ReadAsArray(x0,y0,1,1)[0][0]
+        return self.ds.ReadAsArray(int(x),int(y),1,1)[0][0]
 
-    def getElevationArray(self, x0, y0, x1, y1):
-        xSize = int(x1-x0)
-        ySize = int(y1-y0)
-        if x1<x0: x=x1
-        else: x=x0
-        if y1<y0: y=y1
-        else: y=y0
-        return {
-            "array":self.ds.ReadAsArray(int(x),int(y),abs(xSize)+1,abs(ySize)+1),
-            "x0":x,
-            "y0":y
-        }
+    # def getElevationArray(self, x0, y0, x1, y1):
+    #     xSize = int(x1-x0)
+    #     ySize = int(y1-y0)
+    #     if x1<x0: x=x1
+    #     else: x=x0
+    #     if y1<y0: y=y1
+    #     else: y=y0
+    #     return {
+    #         "array":self.ds.ReadAsArray(int(x),int(y),abs(xSize)+1,abs(ySize)+1),
+    #         "x0":x,
+    #         "y0":y
+    #     }
 
     def getElevationProfile(self, latLon0, latLon1):
         pc0 = self.toPixelCoords(latLon0)
         pc1 = self.toPixelCoords(latLon1)
         points = self.bresenham(pc0, pc1)
-        elev = self.getElevationArray(points[0][0],points[0][1],points[-1][0],points[-1][1])
-        x0 = elev['x0']
-        y0 = elev['y0']
-        def getElev(x,y):
-            x -= x0
-            y -= y0
-            return elev['array'][int(y)][int(x)]
-        return [(self.toLatLon(p[0],p[1]).lon.decimal_degree,self.toLatLon(p[0],p[1]).lat.decimal_degree,getElev(p[0],p[1])) for p in points]
+        # return [(
+        #     self.toLatLon(x,y),
+        #     self.toLatLon(x,y),
+        #     self.getElevation(x,y)
+        #         ) for x,y in points]
+        res=[]
+        for x,y in points:
+            ll = self.toLatLon(x,y)
+            res.append((
+                ll.lon.decimal_degree,
+                ll.lat.decimal_degree,
+                self.getElevation(x,y)
+            ))
+        return res
+        # elev = self.getElevationArray(points[0][0],points[0][1],points[-1][0],points[-1][1])
+        # x0 = elev['x0']
+        # y0 = elev['y0']
+        # def getElev(x,y):
+        #     x -= x0
+        #     y -= y0
+        #     return elev['array'][int(y)][int(x)]
+        # return [(self.toLatLon(p[0],p[1]).lon.decimal_degree,self.toLatLon(p[0],p[1]).lat.decimal_degree,getElev(p[0],p[1])) for p in points]
 
     def bresenham(self, p0, p1):
         """
@@ -96,8 +109,8 @@ def getElevation(lon,lat):
     """
     if type(lat)==str: lat = float(lat)
     if type(lon)==str: lon = float(lon)
-    p = LatLon(lat,lon)
-    return gtopo.getElevation(p)
+    x, y = gtopo.toPixelCoords(LatLon(lat,lon))
+    return gtopo.getElevation(x,y)
 
 def getElevationProfile(p0,p1):
     return gtopo.getElevationProfile(p0,p1)
