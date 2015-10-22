@@ -46,7 +46,9 @@ class GTOPO30:
         def getElev(x,y):
             x -= x0
             y -= y0
-            return elev['array'][int(y)][int(x)]
+            z = elev['array'][int(y)][int(x)]
+            if z == -9999: return 0
+            else: return z
         return [(self.toLatLon(p[0],p[1]).lon.decimal_degree,self.toLatLon(p[0],p[1]).lat.decimal_degree,getElev(p[0],p[1])) for p in points]
 
     def bresenham(self, p0, p1):

@@ -3,7 +3,6 @@ from pymongo import MongoClient
 import re
 import numpy as np
 from datetime import datetime
-from pandas import DataFrame
 from GTOPO30 import getElevationProfile
 from LatLon import LatLon
 
@@ -48,16 +47,14 @@ def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD,elevThresh=ELEV_THRES
             c1 = neighbor['loc']['coordinates']
             neighborLoc = LatLon(c1[1],c1[0])
             # t0topoQuery = datetime.now()
-            elevProfile = DataFrame(getElevationProfile(stationLoc,neighborLoc),
-                                    columns=('lon','lat','elev'))
-            elevs=elevProfile['elev']
-            elevProfile.loc[elevs==-9999,'elev']=0  # set no-data to 0
+            elevProfile = np.array(getElevationProfile(stationLoc,neighborLoc))
+            elevs=elevProfile[:,2]
             #print (elevProfile)
             relativePeakHeight = elevs.max() \
-                - np.max([elevs[0],elevs[len(elevProfile)-1]])
+                - np.max([elevs[0],elevs[-1]])
             neighbor['distance'] = stationLoc.distance(neighborLoc)
             # print(neighbor['_id'], elevs.max(),relativePeakHeight,dist)
-            elevDiff = abs(elevs[0]-elevs[len(elevProfile)-1])
+            elevDiff = abs(elevs[0]-elevs[-1])
             if relativePeakHeight<topoThresh and elevDiff < elevThresh:
                 filteredNeighbors.append(neighbor)
         print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
