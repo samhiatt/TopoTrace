@@ -63,7 +63,7 @@ function initMap() {
         if (map.points.length==2) {
             var p0 = map.points[0];
             var p1 = map.points[1];
-            var url = '/elevationProfile?lat0='+p0.position.lat()
+            var url = 'elevationProfile?lat0='+p0.position.lat()
                     +'&lon0='+p0.position.lng()
                     +'&lat1='+p1.position.lat()
                     +'&lon1='+p1.position.lng();
@@ -128,7 +128,7 @@ function showNeighbors(stationId){
     if (!elevThresh && elevThresh!=0) elevThresh = 200; // default 200 feet
     d3.selectAll("form#search input").attr('disabled',true);
     clearMarkers();
-    var url = "/getFilteredNeighbors?stationId="+stationId+"&topoThresh="+topoThresh+"&elevThresh="+elevThresh;
+    var url = "getFilteredNeighbors?stationId="+stationId+"&topoThresh="+topoThresh+"&elevThresh="+elevThresh;
     d3.json(url,function(err,data){
         d3.selectAll("form#search input").attr('disabled',null);
         if (err) throw err;

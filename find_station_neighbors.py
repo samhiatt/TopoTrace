@@ -60,7 +60,7 @@ def getFilteredNeighbors(station,topoThresh=TOPO_THRESHOLD,elevThresh=ELEV_THRES
             elevDiff = abs(elevs[0]-elevs[-1])
             if relativePeakHeight<topoThresh and elevDiff < elevThresh:
                 filteredNeighbors.append(neighbor)
-        print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
+        #print("StationLoop: %i stations, %.6fs"%(neighborCount,(datetime.now()-t0NeighborLoop).total_seconds()))
         return filteredNeighbors, neighbors
 
 if __name__=='__main__':
